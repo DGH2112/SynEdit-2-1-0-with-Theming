@@ -117,7 +117,8 @@ uses
 {$ENDIF}
   Math,
   SysUtils,
-  Classes;
+  Classes,
+  VCL.Themes;
 
 const
 {$IFNDEF SYN_COMPILER_3_UP}
@@ -1496,8 +1497,8 @@ begin
 {$ENDIF}
   Height := 150;
   Width := 200;
-  Cursor := crIBeam;
-  Color := clWindow;
+  Cursor := StyleServices.GetSystemColor(crIBeam);
+  Color := StyleServices.GetSystemColor(clWindow);
 {$IFDEF SYN_WIN32}
   FFontDummy.Name := 'Courier New';
   FFontDummy.Size := 10;
@@ -1570,9 +1571,9 @@ begin
 
   // Set parent after BOTH scrollbars are created.
   FHScrollBar.Parent := Self;
-  FHScrollBar.Color := clScrollBar;
+  FHScrollBar.Color := StyleServices.GetSystemColor(clScrollBar);
   FVScrollBar.Parent := Self;
-  FVScrollBar.Color := clScrollBar;
+  FVScrollBar.Color := StyleServices.GetSystemColor(clScrollBar);
 {$ENDIF}
   FScrollHintColor := clInfoBk;
   FScrollHintFormat := shfTopLineOnly;
@@ -2677,7 +2678,7 @@ begin
   { draws the lower-right corner of the scrollbars }
   if FHScrollBar.Visible and FVScrollBar.Visible then
   begin
-    Canvas.Brush.Color := FHScrollBar.Color;
+    Canvas.Brush.Color := StyleServices.GetSystemColor(FHScrollBar.Color);
     Canvas.FillRect(Bounds(FVScrollBar.Left, FHScrollBar.Top,
       FVScrollBar.Width, FHScrollBar.Height));
   end;
@@ -2797,21 +2798,21 @@ procedure TCustomSynEdit.PaintGutter(const AClip: TRect;
     OldColor: TColor;
     OldStyle: TBrushStyle;
   begin
-    FTextDrawer.SetBackColor(Color);
+    FTextDrawer.SetBackColor(StyleServices.GetSystemColor(Color));
 
     OldStyle := Canvas.Brush.Style;
     OldColor := Canvas.Brush.Color;
 
     Canvas.Brush.Style := bsSolid;
-    Canvas.Brush.Color := Color;
+    Canvas.Brush.Color := StyleServices.GetSystemColor(Color);
 
     Canvas.FillRect(Rect(FGutterWidth - FGutter.RightOffset - FGutter.ModificationBarWidth, Top,
       FGutterWidth - FGutter.RightOffset, Bottom));
 
     Canvas.Brush.Style := OldStyle;
-    Canvas.Brush.Color := OldColor;
+    Canvas.Brush.Color := StyleServices.GetSystemColor(OldColor);
 
-    FTextDrawer.SetBackColor(FGutter.Color);
+    FTextDrawer.SetBackColor(StyleServices.GetSystemColor(FGutter.Color));
   end;
 
 var
@@ -2850,7 +2851,7 @@ begin
     SynDrawGradient(Canvas, FGutter.GradientStartColor, FGutter.GradientEndColor,
       FGutter.GradientSteps, Rect(0, 0, FGutterWidth, ClientHeight), True);
 
-  Canvas.Brush.Color := FGutter.Color;
+  Canvas.Brush.Color := StyleServices.GetSystemColor(FGutter.Color);
 
   if FGutter.ShowLineNumbers then
   begin
@@ -2865,10 +2866,10 @@ begin
 {$ENDIF}
     try
       if FGutter.UseFontStyle then
-        FTextDrawer.SetForeColor(FGutter.Font.Color)
+        FTextDrawer.SetForeColor(StyleServices.GetSystemColor(FGutter.Font.Color))
       else
-        FTextDrawer.SetForeColor(Self.Font.Color);
-      FTextDrawer.SetBackColor(FGutter.Color);
+        FTextDrawer.SetForeColor(StyleServices.GetSystemColor(Self.Font.Color));
+      FTextDrawer.SetBackColor(StyleServices.GetSystemColor(FGutter.Color));
 
       // prepare the rect initially
       rcLine := AClip;
@@ -2986,7 +2987,7 @@ begin
   if (FGutter.BorderStyle <> gbsNone) and (AClip.Right >= FGutterWidth - 2) then
     with Canvas do
     begin
-      Pen.Color := FGutter.BorderColor;
+      Pen.Color := StyleServices.GetSystemColor(FGutter.BorderColor);
       Pen.Width := 1;
       with AClip do
       begin
@@ -2994,7 +2995,7 @@ begin
         begin
           MoveTo(FGutterWidth - 2, Top);
           LineTo(FGutterWidth - 2, Bottom);
-          Pen.Color := FGutter.Color;
+          Pen.Color := StyleServices.GetSystemColor(FGutter.Color);
         end;
         MoveTo(FGutterWidth - 1, Top);
         LineTo(FGutterWidth - 1, Bottom);
@@ -3157,9 +3158,9 @@ begin
   if FGutter.Gradient then
   begin
     GradientStops[0].position := 0;
-    GradientStops[0].color := D2D1ColorF(FGutter.GradientStartColor);
+    GradientStops[0].color := D2D1ColorF(StyleServices.GetSystemColor(FGutter.GradientStartColor));
     GradientStops[1].position := 1;
-    GradientStops[1].color := D2D1ColorF(FGutter.GradientEndColor);
+    GradientStops[1].color := D2D1ColorF(StyleServices.GetSystemColor(FGutter.GradientEndColor));
     FRenderTarget.CreateGradientStopCollection(@GradientStops[0], 2,
       D2D1_GAMMA_2_2, D2D1_EXTEND_MODE_CLAMP, GradientStopCollection);
 
@@ -3173,7 +3174,7 @@ begin
   else
   begin
     // create a solid color brush
-    FRenderTarget.CreateSolidColorBrush(D2D1ColorF(FGutter.Color), nil,
+    FRenderTarget.CreateSolidColorBrush(D2D1ColorF(StyleServices.GetSystemColor(FGutter.Color)), nil,
       SolidColorBrush);
 
     Brush := SolidColorBrush;
@@ -3218,7 +3219,7 @@ begin
       FD2DLocale, TextFormat);
     TextFormat.SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
 
-    FRenderTarget.CreateSolidColorBrush(D2D1ColorF(CurrentFont.Color), nil,
+    FRenderTarget.CreateSolidColorBrush(D2D1ColorF(StyleServices.GetSystemColor(CurrentFont.Color)), nil,
       SolidColorBrush);
 
     for CurrentLine := FirstLine to LastLine do
@@ -3305,7 +3306,7 @@ begin
         SolidColorBrush := nil;
 
         // create new brush
-        FRenderTarget.CreateSolidColorBrush(D2D1ColorF(FGutter.Color), nil,
+        FRenderTarget.CreateSolidColorBrush(D2D1ColorF(StyleServices.GetSystemColor(FGutter.Color)), nil,
           SolidColorBrush);
       end;
       FRenderTarget.DrawLine(
@@ -3548,7 +3549,7 @@ var
     if (ActiveLineColor <> clNone) and (bCurrentLine) then
       Result := ActiveLineColor
     else begin
-      Result := Color;
+      Result := StyleServices.GetSystemColor(Color);
       if Highlighter <> nil then
       begin
         iAttri := Highlighter.WhitespaceAttribute;
@@ -3624,12 +3625,12 @@ var
       begin
         SetBackColor(colSelBG);
         SetForeColor(colSelFG);
-        Canvas.Brush.Color := colSelBG;
+        Canvas.Brush.Color := StyleServices.GetSystemColor(colSelBG);
       end
       else begin
         SetBackColor(colBG);
         SetForeColor(colFG);
-        Canvas.Brush.Color := colBG;
+        Canvas.Brush.Color := StyleServices.GetSystemColor(colBG);
       end;
   end;
 
@@ -3973,7 +3974,7 @@ var
     begin
       Background := colEditorBG;
     end;
-    if Foreground = clNone then Foreground := Font.Color;
+    if Foreground = clNone then Foreground := StyleServices.GetSystemColor(Font.Color);
     // Do we have to paint the old chars first, or can we just append?
     bCanAppend := False;
     bSpacesTest := False;
@@ -4281,7 +4282,7 @@ begin
     if (nRightEdge >= AClip.Left) and (nRightEdge <= AClip.Right) then
     begin
       bDoRightEdge := True;
-      Canvas.Pen.Color := FRightEdgeColor;
+      Canvas.Pen.Color := StyleServices.GetSystemColor(FRightEdgeColor);
       Canvas.Pen.Width := 1;
     end;
   end;
@@ -4301,7 +4302,7 @@ begin
     // (value of WhiteAttribute can vary in e.g. MultiSyn)
     if Highlighter <> nil then
       Highlighter.ResetRange;
-    Canvas.Brush.Color := colEditorBG;
+    Canvas.Brush.Color := StyleServices.GetSystemColor(colEditorBG);
     Canvas.FillRect(rcToken);
     // Adjust the invalid area to not include this area.
     AClip.Left := rcToken.Right;
@@ -4331,7 +4332,7 @@ begin
   begin
     if Highlighter <> nil then
       Highlighter.ResetRange;
-    Canvas.Brush.Color := colEditorBG;
+    Canvas.Brush.Color := StyleServices.GetSystemColor(colEditorBG);
     Canvas.FillRect(rcToken);
     // Draw the right edge if necessary.
     if bDoRightEdge then
@@ -4510,7 +4511,7 @@ var
   var
     Color: TColor;
   begin
-    if Selected then Color := colSelBG else Color := colBG;
+    if Selected then Color := StyleServices.GetSystemColor(colSelBG) else Color := StyleServices.GetSystemColor(colBG);
     FRenderTarget.CreateSolidColorBrush(D2D1ColorF(Color), nil, SolidColorBrush);
   end;
 
@@ -5647,7 +5648,7 @@ begin
       begin
         with FFontDummy do
         begin
-          Color := Value.Color;
+          Color := StyleServices.GetSystemColor(Value.Color);
           Pitch := fpFixed;
           Size := Value.Size;
           Style := Value.Style;
@@ -7003,7 +7004,7 @@ begin
         if eoShowScrollHint in FOptions then
         begin
           ScrollHint := GetScrollHint;
-          ScrollHint.Color := FScrollHintColor;
+          ScrollHint.Color := StyleServices.GetSystemColor(FScrollHintColor);
           case FScrollHintFormat of
             shfTopLineOnly:
               s := Format(SYNS_ScrollInfoFmtTop, [RowToLine(TopLine)]);
@@ -8069,7 +8070,7 @@ begin
           begin
             Parent := Self;
             BorderStyle := bsNone;
-            Color := Self.Color;
+            Color := StyleServices.GetSystemColor(Self.Color);
             ReadOnly := True;
             Top := ClientRect.Top;
             Left := ClientRect.Left + FGutterWidth + 2;
@@ -12028,7 +12029,7 @@ begin
     if Assigned(FOnPaintTransient) then
     begin
       Canvas.Font.Assign(Font);
-      Canvas.Brush.Color := Color;
+      Canvas.Brush.Color := StyleServices.GetSystemColor(Color);
       HideCaret;
       try
         FOnPaintTransient(Self, Canvas, TransientType);
@@ -12049,7 +12050,7 @@ begin
   if Assigned(FOnPaint) then
   begin
     Canvas.Font.Assign(Font);
-    Canvas.Brush.Color := Color;
+    Canvas.Brush.Color := StyleServices.GetSystemColor(Color);
     FOnPaint(Self, Canvas);
   end;
 end;
