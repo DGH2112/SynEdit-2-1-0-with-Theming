@@ -1579,6 +1579,7 @@ begin
   FScrollHintFormat := shfTopLineOnly;
 
   SynFontChanged(nil);
+  TStyleManager.Engine.RegisterStyleHook(TSynEdit, TMemoStyleHook);
 end;
 
 {$IFNDEF SYN_CLX}

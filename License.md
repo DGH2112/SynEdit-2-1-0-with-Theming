@@ -3,9 +3,9 @@ SynEdit 2.1.0 with VCL Theming
 
 Author:  David Hoyle
 
-Version: 2.1.0b
+Version: 2.1.0c
 
-Date:    06 Nov 2018
+Date:    07 Nov 2018
 
 The code contain in the project is all SynEdit 2.1.0 and the licensing in place still adheres. All I've
 don't is add VCL theming to the SynEdit control (other may follow in time).
@@ -15,7 +15,7 @@ are to be retained.
 
 regards
 
-David Hoyle (c) 06 Nov 2018
+David Hoyle (c) 07 Nov 2018
 
 davidghoyle@gmail.com
 
