@@ -4829,7 +4829,7 @@ var
       Background := colEditorBG;
 
     if Foreground = clNone then
-      Foreground := Font.Color;
+      Foreground := StyleServices.GetSystemColor(Font.Color);
 
     // Do we have to paint the old chars first, or can we just append?
     bCanAppend := False;

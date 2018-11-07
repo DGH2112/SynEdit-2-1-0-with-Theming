@@ -278,7 +278,7 @@ uses
 {$IFDEF SYN_UNISCRIBE}
   , SynUsp10
 {$ENDIF}
-  ;
+  ,VCL.Themes;
 
 var
   GFontsInfoManager: TSynFontsInfoManager;
@@ -845,7 +845,7 @@ begin
   begin
     FColor := Value;
     if FDC <> 0 then
-      SetTextColor(FDC, ColorToRGB(Value));
+      SetTextColor(FDC, ColorToRGB(StyleServices.GetSystemColor(Value)));
   end;
 end;
 
@@ -855,7 +855,7 @@ begin
   begin
     FBkColor := Value;
     if FDC <> 0 then
-      Windows.SetBkColor(FDC, ColorToRGB(Value));
+      Windows.SetBkColor(FDC, ColorToRGB(StyleServices.GetSystemColor(Value)));
   end;
 end;
 
