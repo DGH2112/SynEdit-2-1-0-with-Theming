@@ -3,7 +3,7 @@ SynEdit 2.1.0 with VCL Theming
 
 Author:  David Hoyle
 
-Version: 2.1.0c
+Version: 2.1.0d
 
 Date:    07 Nov 2018
 
