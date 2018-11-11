@@ -1497,8 +1497,15 @@ begin
 {$ENDIF}
   Height := 150;
   Width := 200;
-  Cursor := StyleServices.GetSystemColor(crIBeam);
-  Color := StyleServices.GetSystemColor(clWindow);
+  If StyleServices.Enabled Then
+    Begin
+      Cursor := StyleServices.GetSystemColor(crIBeam);
+      Color := StyleServices.GetSystemColor(clWindow);
+    End Else
+    Begin
+      Cursor := crIBeam;
+      Color := clWindow;
+    End;
 {$IFDEF SYN_WIN32}
   FFontDummy.Name := 'Courier New';
   FFontDummy.Size := 10;
@@ -1571,9 +1578,16 @@ begin
 
   // Set parent after BOTH scrollbars are created.
   FHScrollBar.Parent := Self;
-  FHScrollBar.Color := StyleServices.GetSystemColor(clScrollBar);
   FVScrollBar.Parent := Self;
-  FVScrollBar.Color := StyleServices.GetSystemColor(clScrollBar);
+  If Assigned(StyleServices) And StyleServices.Enabled Then
+    Begin
+      FHScrollBar.Color := StyleServices.GetSystemColor(clScrollBar);
+      FVScrollBar.Color := StyleServices.GetSystemColor(clScrollBar);
+    End Else
+    Begin
+      FHScrollBar.Color := clScrollBar;
+      FVScrollBar.Color := clScrollBar;
+    End;
 {$ENDIF}
   FScrollHintColor := clInfoBk;
   FScrollHintFormat := shfTopLineOnly;
@@ -2679,7 +2693,10 @@ begin
   { draws the lower-right corner of the scrollbars }
   if FHScrollBar.Visible and FVScrollBar.Visible then
   begin
-    Canvas.Brush.Color := StyleServices.GetSystemColor(FHScrollBar.Color);
+    If Assigned(StyleServices) And StyleServices.Enabled Then
+      Canvas.Brush.Color := StyleServices.GetSystemColor(FHScrollBar.Color)
+    Else
+      Canvas.Brush.Color := FHScrollBar.Color;
     Canvas.FillRect(Bounds(FVScrollBar.Left, FHScrollBar.Top,
       FVScrollBar.Width, FHScrollBar.Height));
   end;
@@ -2799,21 +2816,33 @@ procedure TCustomSynEdit.PaintGutter(const AClip: TRect;
     OldColor: TColor;
     OldStyle: TBrushStyle;
   begin
-    FTextDrawer.SetBackColor(StyleServices.GetSystemColor(Color));
+    If StyleServices.Enabled Then
+      FTextDrawer.SetBackColor(StyleServices.GetSystemColor(Color))
+    Else
+      FTextDrawer.SetBackColor(Color);
 
     OldStyle := Canvas.Brush.Style;
     OldColor := Canvas.Brush.Color;
 
     Canvas.Brush.Style := bsSolid;
-    Canvas.Brush.Color := StyleServices.GetSystemColor(Color);
+    If StyleServices.Enabled Then
+      Canvas.Brush.Color := StyleServices.GetSystemColor(Color)
+    Else
+      Canvas.Brush.Color := Color;
 
     Canvas.FillRect(Rect(FGutterWidth - FGutter.RightOffset - FGutter.ModificationBarWidth, Top,
       FGutterWidth - FGutter.RightOffset, Bottom));
 
     Canvas.Brush.Style := OldStyle;
-    Canvas.Brush.Color := StyleServices.GetSystemColor(OldColor);
+    If StyleServices.Enabled Then
+      Canvas.Brush.Color := StyleServices.GetSystemColor(OldColor)
+    Else
+      Canvas.Brush.Color := OldColor;
 
-    FTextDrawer.SetBackColor(StyleServices.GetSystemColor(FGutter.Color));
+    If StyleServices.Enabled Then
+      FTextDrawer.SetBackColor(StyleServices.GetSystemColor(FGutter.Color))
+    Else
+      FTextDrawer.SetBackColor(FGutter.Color);
   end;
 
 var
@@ -2852,7 +2881,10 @@ begin
     SynDrawGradient(Canvas, FGutter.GradientStartColor, FGutter.GradientEndColor,
       FGutter.GradientSteps, Rect(0, 0, FGutterWidth, ClientHeight), True);
 
-  Canvas.Brush.Color := StyleServices.GetSystemColor(FGutter.Color);
+  If StyleServices.Enabled Then
+    Canvas.Brush.Color := StyleServices.GetSystemColor(FGutter.Color)
+  Else
+    Canvas.Brush.Color := FGutter.Color;
 
   if FGutter.ShowLineNumbers then
   begin
@@ -2866,11 +2898,21 @@ begin
     FTextDrawer.BeginDrawing(dc);
 {$ENDIF}
     try
-      if FGutter.UseFontStyle then
-        FTextDrawer.SetForeColor(StyleServices.GetSystemColor(FGutter.Font.Color))
-      else
-        FTextDrawer.SetForeColor(StyleServices.GetSystemColor(Self.Font.Color));
-      FTextDrawer.SetBackColor(StyleServices.GetSystemColor(FGutter.Color));
+      If StyleServices.Enabled Then
+        Begin
+          if FGutter.UseFontStyle then
+            FTextDrawer.SetForeColor(StyleServices.GetSystemColor(FGutter.Font.Color))
+          else
+            FTextDrawer.SetForeColor(StyleServices.GetSystemColor(Self.Font.Color));
+          FTextDrawer.SetBackColor(StyleServices.GetSystemColor(FGutter.Color));
+        End Else
+        Begin
+          if FGutter.UseFontStyle then
+            FTextDrawer.SetForeColor(FGutter.Font.Color)
+          else
+            FTextDrawer.SetForeColor(Self.Font.Color);
+          FTextDrawer.SetBackColor(FGutter.Color);
+        End;
 
       // prepare the rect initially
       rcLine := AClip;
@@ -2988,7 +3030,10 @@ begin
   if (FGutter.BorderStyle <> gbsNone) and (AClip.Right >= FGutterWidth - 2) then
     with Canvas do
     begin
-      Pen.Color := StyleServices.GetSystemColor(FGutter.BorderColor);
+      If StyleServices.Enabled Then
+        Pen.Color := StyleServices.GetSystemColor(FGutter.BorderColor)
+      Else
+        Pen.Color := FGutter.BorderColor;
       Pen.Width := 1;
       with AClip do
       begin
@@ -2996,7 +3041,10 @@ begin
         begin
           MoveTo(FGutterWidth - 2, Top);
           LineTo(FGutterWidth - 2, Bottom);
-          Pen.Color := StyleServices.GetSystemColor(FGutter.Color);
+          If StyleServices.Enabled Then
+            Pen.Color := StyleServices.GetSystemColor(FGutter.Color)
+          Else
+            Pen.Color := FGutter.Color;
         end;
         MoveTo(FGutterWidth - 1, Top);
         LineTo(FGutterWidth - 1, Bottom);
@@ -3159,9 +3207,16 @@ begin
   if FGutter.Gradient then
   begin
     GradientStops[0].position := 0;
-    GradientStops[0].color := D2D1ColorF(StyleServices.GetSystemColor(FGutter.GradientStartColor));
     GradientStops[1].position := 1;
-    GradientStops[1].color := D2D1ColorF(StyleServices.GetSystemColor(FGutter.GradientEndColor));
+    If StyleServices.Enabled Then
+      Begin
+        GradientStops[0].color := D2D1ColorF(StyleServices.GetSystemColor(FGutter.GradientStartColor));
+        GradientStops[1].color := D2D1ColorF(StyleServices.GetSystemColor(FGutter.GradientEndColor));
+      End Else
+      Begin
+        GradientStops[0].color := D2D1ColorF(FGutter.GradientStartColor);
+        GradientStops[1].color := D2D1ColorF(FGutter.GradientEndColor);
+      End;
     FRenderTarget.CreateGradientStopCollection(@GradientStops[0], 2,
       D2D1_GAMMA_2_2, D2D1_EXTEND_MODE_CLAMP, GradientStopCollection);
 
@@ -3175,8 +3230,11 @@ begin
   else
   begin
     // create a solid color brush
-    FRenderTarget.CreateSolidColorBrush(D2D1ColorF(StyleServices.GetSystemColor(FGutter.Color)), nil,
-      SolidColorBrush);
+    If StyleServices.Enabled Then
+      FRenderTarget.CreateSolidColorBrush(D2D1ColorF(StyleServices.GetSystemColor(FGutter.Color)), nil,
+        SolidColorBrush)
+    Else
+      FRenderTarget.CreateSolidColorBrush(D2D1ColorF(FGutter.Color), nil, SolidColorBrush);
 
     Brush := SolidColorBrush;
   end;
@@ -3220,8 +3278,11 @@ begin
       FD2DLocale, TextFormat);
     TextFormat.SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
 
-    FRenderTarget.CreateSolidColorBrush(D2D1ColorF(StyleServices.GetSystemColor(CurrentFont.Color)), nil,
-      SolidColorBrush);
+    If StyleServices.Enabled Then
+      FRenderTarget.CreateSolidColorBrush(D2D1ColorF(StyleServices.GetSystemColor(CurrentFont.Color)),
+        nil, SolidColorBrush)
+    Else
+      FRenderTarget.CreateSolidColorBrush(D2D1ColorF(CurrentFont.Color), nil, SolidColorBrush);
 
     for CurrentLine := FirstLine to LastLine do
     begin
@@ -3307,8 +3368,11 @@ begin
         SolidColorBrush := nil;
 
         // create new brush
-        FRenderTarget.CreateSolidColorBrush(D2D1ColorF(StyleServices.GetSystemColor(FGutter.Color)), nil,
-          SolidColorBrush);
+        If StyleServices.Enabled Then
+          FRenderTarget.CreateSolidColorBrush(D2D1ColorF(StyleServices.GetSystemColor(FGutter.Color)),
+            nil, SolidColorBrush)
+        Else
+          FRenderTarget.CreateSolidColorBrush(D2D1ColorF(FGutter.Color), nil, SolidColorBrush);
       end;
       FRenderTarget.DrawLine(
         D2D1PointF(FGutterWidth - 0.5, Top + 0.5),
@@ -3550,7 +3614,10 @@ var
     if (ActiveLineColor <> clNone) and (bCurrentLine) then
       Result := ActiveLineColor
     else begin
-      Result := StyleServices.GetSystemColor(Color);
+      If StyleServices.Enabled Then
+        Result := StyleServices.GetSystemColor(Color)
+      Else
+        Result := Color;
       if Highlighter <> nil then
       begin
         iAttri := Highlighter.WhitespaceAttribute;
@@ -3626,12 +3693,18 @@ var
       begin
         SetBackColor(colSelBG);
         SetForeColor(colSelFG);
-        Canvas.Brush.Color := StyleServices.GetSystemColor(colSelBG);
+        If StyleServices.Enabled Then
+          Canvas.Brush.Color := StyleServices.GetSystemColor(colSelBG)
+        Else
+          Canvas.Brush.Color := colSelBG;
       end
       else begin
         SetBackColor(colBG);
         SetForeColor(colFG);
-        Canvas.Brush.Color := StyleServices.GetSystemColor(colBG);
+        If StyleServices.Enabled Then
+          Canvas.Brush.Color := StyleServices.GetSystemColor(colBG)
+        Else
+          Canvas.Brush.Color := colBG;
       end;
   end;
 
@@ -3975,7 +4048,11 @@ var
     begin
       Background := colEditorBG;
     end;
-    if Foreground = clNone then Foreground := StyleServices.GetSystemColor(Font.Color);
+    if Foreground = clNone then
+      If StyleServices.Enabled Then
+        Foreground := StyleServices.GetSystemColor(Font.Color)
+      Else
+        Foreground := Font.Color;
     // Do we have to paint the old chars first, or can we just append?
     bCanAppend := False;
     bSpacesTest := False;
@@ -4283,7 +4360,10 @@ begin
     if (nRightEdge >= AClip.Left) and (nRightEdge <= AClip.Right) then
     begin
       bDoRightEdge := True;
-      Canvas.Pen.Color := StyleServices.GetSystemColor(FRightEdgeColor);
+      If StyleServices.Enabled Then
+        Canvas.Pen.Color := StyleServices.GetSystemColor(FRightEdgeColor)
+      Else
+        Canvas.Pen.Color := FRightEdgeColor;
       Canvas.Pen.Width := 1;
     end;
   end;
@@ -4303,7 +4383,10 @@ begin
     // (value of WhiteAttribute can vary in e.g. MultiSyn)
     if Highlighter <> nil then
       Highlighter.ResetRange;
-    Canvas.Brush.Color := StyleServices.GetSystemColor(colEditorBG);
+    If StyleServices.Enabled Then
+      Canvas.Brush.Color := StyleServices.GetSystemColor(colEditorBG)
+    Else
+      Canvas.Brush.Color := colEditorBG;
     Canvas.FillRect(rcToken);
     // Adjust the invalid area to not include this area.
     AClip.Left := rcToken.Right;
@@ -4333,7 +4416,10 @@ begin
   begin
     if Highlighter <> nil then
       Highlighter.ResetRange;
-    Canvas.Brush.Color := StyleServices.GetSystemColor(colEditorBG);
+    If StyleServices.Enabled Then
+      Canvas.Brush.Color := StyleServices.GetSystemColor(colEditorBG)
+    Else
+      Canvas.Brush.Color := colEditorBG;
     Canvas.FillRect(rcToken);
     // Draw the right edge if necessary.
     if bDoRightEdge then
@@ -4512,7 +4598,19 @@ var
   var
     Color: TColor;
   begin
-    if Selected then Color := StyleServices.GetSystemColor(colSelBG) else Color := StyleServices.GetSystemColor(colBG);
+    If StyleServices.Enabled Then
+      Begin
+        if Selected then
+          Color := StyleServices.GetSystemColor(colSelBG)
+        else
+          Color := StyleServices.GetSystemColor(colBG);
+      End Else
+      Begin
+        if Selected then
+          Color := colSelBG
+        else
+          Color := colBG;
+      End;
     FRenderTarget.CreateSolidColorBrush(D2D1ColorF(Color), nil, SolidColorBrush);
   end;
 
@@ -4829,7 +4927,10 @@ var
       Background := colEditorBG;
 
     if Foreground = clNone then
-      Foreground := StyleServices.GetSystemColor(Font.Color);
+      If StyleServices.Enabled Then
+        Foreground := StyleServices.GetSystemColor(Font.Color)
+      Else
+        Foreground := Font.Color;
 
     // Do we have to paint the old chars first, or can we just append?
     bCanAppend := False;
@@ -5649,7 +5750,10 @@ begin
       begin
         with FFontDummy do
         begin
-          Color := StyleServices.GetSystemColor(Value.Color);
+          If StyleServices.Enabled Then
+            Color := StyleServices.GetSystemColor(Value.Color)
+          Else
+            Color := Value.Color;
           Pitch := fpFixed;
           Size := Value.Size;
           Style := Value.Style;
@@ -7005,7 +7109,10 @@ begin
         if eoShowScrollHint in FOptions then
         begin
           ScrollHint := GetScrollHint;
-          ScrollHint.Color := StyleServices.GetSystemColor(FScrollHintColor);
+          If StyleServices.Enabled Then
+            ScrollHint.Color := StyleServices.GetSystemColor(FScrollHintColor)
+          Else
+            ScrollHint.Color := FScrollHintColor;
           case FScrollHintFormat of
             shfTopLineOnly:
               s := Format(SYNS_ScrollInfoFmtTop, [RowToLine(TopLine)]);
@@ -8071,7 +8178,10 @@ begin
           begin
             Parent := Self;
             BorderStyle := bsNone;
-            Color := StyleServices.GetSystemColor(Self.Color);
+            If Assigned(StyleServices) And StyleServices.Enabled Then
+              Color := StyleServices.GetSystemColor(Self.Color)
+            Else
+              Color := Self.Color;
             ReadOnly := True;
             Top := ClientRect.Top;
             Left := ClientRect.Left + FGutterWidth + 2;
@@ -12030,7 +12140,10 @@ begin
     if Assigned(FOnPaintTransient) then
     begin
       Canvas.Font.Assign(Font);
-      Canvas.Brush.Color := StyleServices.GetSystemColor(Color);
+      If StyleServices.Enabled Then
+        Canvas.Brush.Color := StyleServices.GetSystemColor(Color)
+      Else
+        Canvas.Brush.Color := Color;
       HideCaret;
       try
         FOnPaintTransient(Self, Canvas, TransientType);
@@ -12051,7 +12164,10 @@ begin
   if Assigned(FOnPaint) then
   begin
     Canvas.Font.Assign(Font);
-    Canvas.Brush.Color := StyleServices.GetSystemColor(Color);
+    If StyleServices.Enabled Then
+      Canvas.Brush.Color := StyleServices.GetSystemColor(Color)
+    Else
+      Canvas.Brush.Color := Color;
     FOnPaint(Self, Canvas);
   end;
 end;

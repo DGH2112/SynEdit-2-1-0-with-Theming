@@ -845,7 +845,10 @@ begin
   begin
     FColor := Value;
     if FDC <> 0 then
-      SetTextColor(FDC, ColorToRGB(StyleServices.GetSystemColor(Value)));
+      If StyleServices.Enabled Then
+        SetTextColor(FDC, ColorToRGB(StyleServices.GetSystemColor(Value)))
+      Else
+        SetTextColor(FDC, ColorToRGB(Value));
   end;
 end;
 
@@ -855,7 +858,10 @@ begin
   begin
     FBkColor := Value;
     if FDC <> 0 then
-      Windows.SetBkColor(FDC, ColorToRGB(StyleServices.GetSystemColor(Value)));
+      If StyleServices.Enabled Then
+        Windows.SetBkColor(FDC, ColorToRGB(StyleServices.GetSystemColor(Value)))
+      Else
+        Windows.SetBkColor(FDC, ColorToRGB(Value));
   end;
 end;
 
