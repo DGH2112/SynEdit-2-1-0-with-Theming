@@ -1,0 +1,145 @@
+package SynEdit_R;
+
+{$R *.res}
+{$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION OFF}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES ON}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DEFINE DEBUG}
+{$ENDIF IMPLICITBUILDING}
+{$DESCRIPTION 'SynEdit component suite runtime'}
+{$LIBSUFFIX '103R'}
+{$RUNONLY}
+{$IMPLICITBUILD ON}
+
+requires
+  vcl,
+  vcldb,
+  vclx,
+  rtl;
+
+contains
+  SynTextDrawer in '..\..\Source\SynTextDrawer.pas',
+  SynAutoCorrect,
+  SynAutoCorrectEditor in '..\..\Source\SynAutoCorrectEditor.pas' {frmAutoCorrectEditor},
+  SynCompletionProposal,
+  SynDBEdit,
+  SynEdit,
+  SynEditAutoComplete,
+  SynEditDocumentManager,
+  SynEditExport,
+  SynEditHighlighter,
+  SynEditKbdHandler,
+  SynEditKeyCmdEditor in '..\..\Source\SynEditKeyCmdEditor.pas' {SynEditKeystrokeEditorForm},
+  SynEditKeyCmds,
+  SynEditKeyCmdsEditor in '..\..\Source\SynEditKeyCmdsEditor.pas' {SynEditKeystrokesEditorForm},
+  SynEditKeyConst,
+  SynEditMiscClasses,
+  SynEditMiscProcs,
+  SynEditOptionsDialog in '..\..\Source\SynEditOptionsDialog.pas' {fmEditorOptionsDialog},
+  SynEditPlugins,
+  SynEditWordWrap,
+  SynEditPrint,
+  SynEditPrinterInfo,
+  SynEditPrintHeaderFooter in '..\..\Source\SynEditPrintHeaderFooter.pas',
+  SynEditPrintMargins,
+  SynEditPrintMarginsDialog in '..\..\Source\SynEditPrintMarginsDialog.pas' {SynEditPrintMarginsDlg},
+  SynEditPrintPreview,
+  SynEditPrintTypes in '..\..\Source\SynEditPrintTypes.pas',
+  SynEditPythonBehaviour,
+  SynEditRegexSearch,
+  SynEditSearch,
+  SynEditStrConst,
+  SynEditTextBuffer,
+  SynEditTypes,
+  SynExportHTML,
+  SynExportRTF,
+  SynExportTeX,
+  SynHighlighterADSP21xx,
+  SynHighlighterAsm,
+  SynHighlighterAWK,
+  SynHighlighterBaan,
+  SynHighlighterBat,
+  SynHighlighterCAC,
+  SynHighlighterCache,
+  SynHighlighterCobol,
+  SynHighlighterCPM,
+  SynHighlighterCpp,
+  SynHighlighterCS,
+  SynHighlighterDfm,
+  SynHighlighterDml,
+  SynHighlighterFortran,
+  SynHighlighterFoxpro,
+  SynHighlighterGalaxy,
+  SynHighlighterGeneral,
+  SynHighlighterGWS,
+  SynHighlighterHashEntries,
+  SynHighlighterHaskell,
+  SynHighlighterHC11,
+  SynHighlighterHP48,
+  SynHighlighterHtml,
+  SynHighlighterIDL,
+  SynHighlighterIni,
+  SynHighlighterInno,
+  SynHighlighterJava,
+  SynHighlighterJScript,
+  SynHighlighterJSON,
+  SynHighlighterKix,
+  SynHighlighterM3,
+  SynHighlighterModelica,
+  SynHighlighterMsg,
+  SynHighlighterMulti,
+  SynHighlighterPas,
+  SynHighlighterPerl,
+  SynHighlighterPHP,
+  SynHighlighterProgress,
+  SynHighlighterPython,
+  SynHighlighterRC,
+  SynHighlighterRuby,
+  SynHighlighterSDD,
+  SynHighlighterSml,
+  SynHighlighterSQL,
+  SynHighlighterST,
+  SynHighlighterTclTk,
+  SynHighlighterTeX,
+  SynHighlighterUNIXShellScript,
+  SynHighlighterUnreal,
+  SynHighlighterVB,
+  SynHighlighterVBScript,
+  SynHighlighterXML,
+  SynMacroRecorder in '..\..\Source\SynMacroRecorder.pas',
+  SynMemo,
+  SynRegExpr,
+  SynHighlighterCss,
+  SynHighlighterLDraw,
+  SynHighlighterURI,
+  SynURIOpener,
+  SynHighlighterDOT,
+  SynHighlighterDWS,
+  SynHighlighterVrml97,
+  SynHighlighterEiffel,
+  SynUnicode in '..\..\Source\SynUnicode.pas' {$IFNDEF CPUX64},
+  SynUsp10 in '..\..\Source\SynUsp10.pas' {$ENDIF},
+  SynEditHighlighterOptions,
+  SynHighlighterAsmMASM,
+  SynHighlighterGo in '..\..\Source\SynHighlighterGo.pas';
+
+end.
