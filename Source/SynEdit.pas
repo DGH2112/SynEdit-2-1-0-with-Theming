@@ -1593,7 +1593,6 @@ begin
   FScrollHintFormat := shfTopLineOnly;
 
   SynFontChanged(nil);
-  TStyleManager.Engine.RegisterStyleHook(TSynEdit, TMemoStyleHook);
 end;
 
 {$IFNDEF SYN_CLX}
@@ -13328,6 +13327,7 @@ initialization
 {$ENDIF}
   SynEditClipboardFormat := RegisterClipboardFormat(SYNEDIT_CLIPBOARD_FORMAT);
 {$ENDIF}
+  TStyleManager.Engine.RegisterStyleHook(TSynEdit, TMemoStyleHook);
 finalization
 {$IFNDEF SYN_CLX}
 {$IFNDEF UNICODE}
