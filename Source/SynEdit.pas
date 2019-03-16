@@ -1498,14 +1498,10 @@ begin
   Height := 150;
   Width := 200;
   If StyleServices.Enabled Then
-    Begin
-      Cursor := StyleServices.GetSystemColor(crIBeam);
-      Color := StyleServices.GetSystemColor(clWindow);
-    End Else
-    Begin
-      Cursor := crIBeam;
-      Color := clWindow;
-    End;
+    Color := StyleServices.GetSystemColor(clWindow)
+  Else
+    Color := clWindow;
+  Cursor := crIBeam;
 {$IFDEF SYN_WIN32}
   FFontDummy.Name := 'Courier New';
   FFontDummy.Size := 10;
@@ -13327,8 +13323,11 @@ initialization
 {$ENDIF}
   SynEditClipboardFormat := RegisterClipboardFormat(SYNEDIT_CLIPBOARD_FORMAT);
 {$ENDIF}
-  TStyleManager.Engine.RegisterStyleHook(TSynEdit, TMemoStyleHook);
+  If Assigned(TStyleManager.Engine) Then
+    TStyleManager.Engine.RegisterStyleHook(TSynEdit, TMemoStyleHook);
 finalization
+  If Assigned(TStyleManager.Engine) Then
+    TStyleManager.Engine.UnregisterStyleHook(TSynEdit, TMemoStyleHook);
 {$IFNDEF SYN_CLX}
 {$IFNDEF UNICODE}
   if Win32PlatformIsUnicode and (GetMsgHook <> 0) then
