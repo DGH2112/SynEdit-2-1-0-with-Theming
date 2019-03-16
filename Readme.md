@@ -1,7 +1,7 @@
 SynEdit 2.1.0 with VCL Theming Support
 ======================================
 
-## Theming Support by David Hoyle (SynEdit 2.1.0e with VCL Theming - 12 Jan 2019)
+## Theming Support by David Hoyle (SynEdit 2.1.0h with VCL Theming - 16 Mar 2019)
 
 The text below if from the **SynEdit 2.1.0** readme.md file however just a few word on why this
 repository exists. I, David Hoyle, do not claim that any of this code is mine, I just use the SynEdit
